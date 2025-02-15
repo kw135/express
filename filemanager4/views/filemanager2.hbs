@@ -1,0 +1,150 @@
+<div class="flex">
+  {{! left panel do dodawania plikow }}
+  <div id="divLeft">
+    <div class="button1" id="folder">new folder</div>
+    {{#if visible}}
+    <div class="button1" id="renameFolder">rename folder</div>
+    {{/if}}
+    <div class="button1" id="file">new file</div>
+    <form enctype="multipart/form-data" action="/handleUpload" method="post">
+      <div id="upload">
+        <input type="file" multiple required name="uploadFile" id="uploadFile" oninput="disabled1()" />
+        <label for="uploadFile" id="file1">Select
+          file(s) to upload</label>
+        <div>
+          <button disabled="true" type="submit" class="submitButtonGray" id="createFolderButton">upload</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div style="width: 90%;">
+
+    <div id="directorySelector" class="flex">
+      {{#if pathInfo}}
+      {{#each pathInfo}}
+      <a href="filemanager?path={{path}}">[{{name}}] <span style="color: gray;">-&gt;</span></a>
+      {{/each}}
+      {{/if}}
+    </div>
+    {{#if data}}
+    {{! miejsce do wyswietlana folderow }}
+    <div id="divRight1">
+      <h2>folders</h2>
+      <div class="flex">
+        {{#each data}}
+        {{#if dir}}
+        <div id="data">
+          <div>
+            <div class="flex" style="align-items: center; margin-bottom: 10px; justify-content:space-between;">
+              <div id="backGray">
+                <div id="ext" style="color: white;">{{ext}}</div>
+              </div>
+              <a href="/usun/{{fullname}}" onclick="return confirm('Czy usunąć?')">X</a>
+            </div>
+            <a href="filemanager?path={{path}}/{{name}}">[{{name}}]</a>
+          </div>
+        </div>
+        {{/if}}
+        {{/each}}
+      </div>
+    </div>
+    {{! miejsce do wyswietlana plikow }}
+    <div id="divRight1">
+      <h2>files</h2>
+      <div class="flex">
+        {{#each data}}
+        {{#if file}}
+        <div id="data">
+          <div>
+            <div class="flex" style="align-items: center; margin-bottom: 10px; justify-content:space-between;">
+              <div id="backGray">
+                <div id="ext" style="color: white; background-color:black;">{{ext}}</div>
+              </div>
+              <a href="/usun/{{fullname}}" onclick="return confirm('Czy usunąć?')">X</a>
+            </div>
+            {{#if show}}
+            <a style="overflow: hidden;" href="showFile?name={{path}}/{{name}}">[{{name}}]</a>
+            {{else}}
+            <p style="overflow: hidden;">[{{name}}]</p>
+            {{/if}}
+          </div>
+        </div>
+        {{/if}}
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+</div>
+
+{{! dialog do tworzenia folderu }}
+<dialog id="dialogForFolder">
+  <h4>new folder name:</h4>
+  <form action="/newFolder">
+    <input type="text" name="folder" id="folder" />
+    <div class="flex" style="margin: 0 25%;">
+      <button class="blueButton" type="submit" id="createFolderButton1">create</button>
+      <div class="blueButton" onclick="closeDialog('dialogForFolder')">cancel</div>
+    </div>
+  </form>
+</dialog>
+{{! dialog do tworzenia pliku }}
+<dialog id="dialogForFile">
+  <h4>new file name:</h4>
+  <form action="/newFile">
+    <div class="flex" id="filenameContainer">
+      <input type="text" name="file" id="file" />
+      <select name="ext" id="ext">
+        <option value=".txt">txt</option>
+        <option value=".js">js</option>
+        <option value=".html">html</option>
+        <option value=".css">css</option>
+        <option value=".json">json</option>
+      </select>
+    </div>
+    <div class="flex" style="margin: 0 25%;">
+      <button class="blueButton" type="submit" id="createFileButton">create</button>
+      <div class="blueButton" onclick="closeDialog('dialogForFile')">cancel</div>
+    </div>
+  </form>
+</dialog>
+<dialog id="dialogForFolderRename">
+  <h4>Rename folder</h4>
+  <form action="/rename">
+    {{#if lastFile}}
+    {{#each lastFile}}
+    <input type="hidden" name="name" value="{{path}}" />
+    {{/each}}
+    {{/if}}
+    <input type="text" name="newName" id="folderName" />
+    <div class="flex" style="margin: 0 25%;">
+      <button class="blueButton" type="submit" id="createFileButton">rename</button>
+      <div class="blueButton" onclick="closeDialog('dialogForFolderRename')" style="color: white;">cancel</div>
+    </div>
+  </form>
+</dialog>
+<script>
+  document.getElementById("folder").onclick = function () {
+    const dialog = document.getElementById("dialogForFolder").showModal();
+  }
+  document.getElementById("file").onclick = function () {
+    const dialog = document.getElementById("dialogForFile").showModal();
+  }
+  document.getElementById("renameFolder").onclick = function () {
+    const dialog = document.getElementById("dialogForFolderRename").showModal();
+  }
+  function closeDialog(id) {
+    document.getElementById(id).close()
+  }
+  function disabled1() {
+    const file = document.getElementById("uploadFile")
+    const button1 = document.getElementById("createFolderButton")
+    console.log(file.files.length)
+    if (file.files.length === 0) {
+      button1.classList = "submitButtonGray"
+    } else {
+      button1.removeAttribute("disabled"); button1.classList = "submitButtonBlue"
+    }
+  }
+</script>

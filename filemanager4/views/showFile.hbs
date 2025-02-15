@@ -1,0 +1,199 @@
+<div class="flex">
+    {{! left panel do dodawania plikow }}
+    <div id="divLeft">
+        <div class="flex" id="colors">
+            <div id="operator" style="border-radius: 15px 0 0 15px;" onclick="changeTheme('-')">-</div>
+            <div id="colorText">colors</div>
+            <div id="operator" style="border-radius:0 15px 15px 0;" onclick="changeTheme('+')">+</div>
+        </div>
+        <div class="button1" id="saveConfig">save config</div>
+        <div class="button1" id="renameFile">rename file</div>
+    </div>
+
+    <div style="width: 90%;">
+        <form action="/saveFile" method="post" style="height: 120%;">
+            {{#if showFileData}}
+            <input type="hidden" name="filename" value="{{showFileData.filename}}">
+            <div id="directorySelector" class="flex">
+                <p>preview file -&gt; </p>
+                <a href="/displayFile?path={{showFileData.filename}}" style="color: cornflowerblue;"
+                    target=”_blank”>[{{showFileData.filename}}]</a>
+            </div>
+            <div id="textareaContainer" class="flex">
+                <textarea name="rowNums" id="rowNums" readonly></textarea>
+                <textarea name="mainText" id="mainText">{{showFileData.filedata}}</textarea>
+            </div>
+            {{/if}}
+            <button class="button1" id="saveFile" name="saveFile" type="submit">save file</button>
+        </form>
+    </div>
+</div>
+<dialog id="dialogForFileRename">
+    <h4>Rename file</h4>
+    <form action="/rename">
+        {{#if showFileData}}
+        <input type="hidden" name="name" value="{{showFileData.filename}}" />
+        {{/if}}
+        <div class="flex" id="filenameContainer">
+            <input type="text" name="newName" id="fileName" />
+            <select name="ext" id="ext">
+                <option value=".txt">txt</option>
+                <option value=".js">js</option>
+                <option value=".html">html</option>
+                <option value=".css">css</option>
+                <option value=".json">json</option>
+            </select>
+        </div>
+        <div class="flex" style="margin: 0 25%;">
+            <button class="blueButton" type="submit" id="createFileButton">rename</button>
+            <button class="blueButton" onclick="closeDialog('dialogForFolderRename')"
+                style="color: white;">cancel</button>
+        </div>
+    </form>
+</dialog>
+<script>
+    const rowNums = document.getElementById("rowNums");
+    const mainText = document.getElementById("mainText");
+    const themes = {
+        theme1: {
+            backgroudColor: "lightgray",
+            colorOfNumbers: "cornflowerblue",
+            colorOfText: "black"
+        },
+        theme2: {
+            backgroudColor: "#564D4A",
+            colorOfNumbers: "cornflowerblue",
+            colorOfText: "white"
+        },
+        theme3: {
+            backgroudColor: "cornflowerblue",
+            colorOfNumbers: "white",
+            colorOfText: "#564D4A"
+        }
+    }
+    let thh = "{{ showFileData.theme }}"
+    switch (thh) {
+        case "theme1":
+            rowNums.style.backgroundColor = themes.theme1.backgroudColor
+            mainText.style.backgroundColor = themes.theme1.backgroudColor
+            rowNums.style.color = themes.theme1.colorOfNumbers
+            rowNums.style.borderColor = themes.theme1.colorOfNumbers
+            mainText.style.color = themes.theme1.colorOfText
+            break
+        case "theme2":
+            rowNums.style.backgroundColor = themes.theme2.backgroudColor
+            mainText.style.backgroundColor = themes.theme2.backgroudColor
+            rowNums.style.color = themes.theme2.colorOfNumbers
+            rowNums.style.borderColor = themes.theme2.colorOfNumbers
+            mainText.style.color = themes.theme2.colorOfText
+            break
+        case "theme3":
+            rowNums.style.backgroundColor = themes.theme3.backgroudColor
+            mainText.style.backgroundColor = themes.theme3.backgroudColor
+            rowNums.style.color = themes.theme3.colorOfNumbers
+            rowNums.style.borderColor = themes.theme3.colorOfNumbers
+            mainText.style.color = themes.theme3.colorOfText
+            break
+        default:
+            break
+    }
+    mainText.oninput = function calcLines() {
+        const lines = mainText.value.split("\n");
+        rowNums.value = lines.map((item, i) => `${i + 1}\n`).join("");
+    };
+    window.onload = function calcLines() {
+        const lines = mainText.value.split("\n");
+        rowNums.value = lines.map((item, i) => `${i + 1}\n`).join("");
+    };
+    document.getElementById("renameFile").onclick = function () {
+        const dialog = document.getElementById("dialogForFileRename").showModal();
+    }
+    function closeDialog(id) {
+        document.getElementById(id).close()
+    }
+
+    let theme = 0
+    let data = { colors: "theme1", ext: "" }
+    function changeTheme(op) {
+        if (op == "+") {
+            theme++
+        } else if (op == "-") {
+            theme--
+        }
+        let ext = `{{showFileData.filename}}`
+        data = { colors: "theme1", ext: ext }
+        switch (theme % 3) {
+            case 0:
+                data.colors = "theme1"
+                break
+            case 1:
+                data.colors = "theme2"
+                break
+            case 2:
+                data.colors = "theme3"
+                break
+            case -1:
+                data.colors = "theme2"
+                break
+            case -2:
+                data.colors = "theme3"
+                break
+            default:
+                break
+        }
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }
+        fetch("/changeTheme", options)
+            .then(response => response.json())
+            .then(data => {
+                const theme = data.theme
+                switch (theme) {
+                    case "theme1":
+                        rowNums.style.backgroundColor = themes.theme1.backgroudColor
+                        mainText.style.backgroundColor = themes.theme1.backgroudColor
+                        rowNums.style.color = themes.theme1.colorOfNumbers
+                        rowNums.style.borderColor = themes.theme1.colorOfNumbers
+                        mainText.style.color = themes.theme1.colorOfText
+                        break
+                    case "theme2":
+                        rowNums.style.backgroundColor = themes.theme2.backgroudColor
+                        mainText.style.backgroundColor = themes.theme2.backgroudColor
+                        rowNums.style.color = themes.theme2.colorOfNumbers
+                        rowNums.style.borderColor = themes.theme2.colorOfNumbers
+                        mainText.style.color = themes.theme2.colorOfText
+                        break
+                    case "theme3":
+                        rowNums.style.backgroundColor = themes.theme3.backgroudColor
+                        mainText.style.backgroundColor = themes.theme3.backgroudColor
+                        rowNums.style.color = themes.theme3.colorOfNumbers
+                        rowNums.style.borderColor = themes.theme3.colorOfNumbers
+                        mainText.style.color = themes.theme3.colorOfText
+                        break
+                    default:
+                        break
+                }
+            })
+            .catch(error => console.log(error));
+    }
+    document.getElementById("saveConfig").onclick = function () {
+        let ext = `{{showFileData.filename}}`
+        let data1 = { ext: ext, color: data.colors }
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data1)
+        }
+        fetch("/saveConfig", options)
+            .then(response => response.json())
+            .then(data1 => data1.json())
+            .catch(error => console.log(error));
+        const alert = window.alert("zapisano konfigurację")
+    }
+</script>
