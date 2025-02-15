@@ -1,0 +1,13 @@
+<h1 class="fw-normal">add car page</h1>
+{{#if id}}
+<div class="alert alert-success d-flex align-items-center my-3 rounded py-30 px-20">
+    <p>new car id = {{id}} added to database</p>
+</div>
+{{/if}}
+<form action="/addCars" method="post">
+    <input type="checkbox" class="form-check-input me-2" name="ubezpieczony" id="ubezpieczony"><label for="ubezpieczony" class="form-label fs-5">ubezpieczony</label> <br>
+    <input type="checkbox" class="form-check-input me-2" name="benzyna" id="benzyna"><label for="benzyna" class="form-label fs-5">benzyna</label> <br>
+    <input type="checkbox" class="form-check-input me-2" name="uszkodzony" id="uszkodzony"><label for="uszkodzony" class="form-label fs-5">uszkodzony</label> <br>
+    <input type="checkbox" class="form-check-input me-2" name="neped" id="neped"><label for="neped" class="form-label fs-5">nepęd 4x4</label> <br>
+    <button id="addButton" type="submit" class="btn btn-dark my-2 rounded" >add</button>
+</form>

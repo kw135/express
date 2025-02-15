@@ -1,0 +1,24 @@
+<h1 class="fw-normal">List car page</h1>
+{{#if docs}}
+<table class="table table-borderless">
+    <tr class="border-bottom">
+        <th>_id</th>
+        <th>ubezpieczony</th>
+        <th>benzyna</th>
+        <th>uszkodzony</th>
+        <th>napęd 4x4</th>
+    </tr>
+    {{#each docs}}
+        <tr class="border-bottom">
+            <td>{{_id}}</td>
+            <td>{{ubezpieczony}}</td>
+            <td>{{benzyna}}</td>
+            <td>{{uszkodzony}}</td>
+            <td>{{neped}}</td>
+            <td>
+                <button id="info"class="btn btn-dark my-2 rounded" onclick="alert(`id: {{_id}}\n ubezpieczony: {{ubezpieczony}}\n benzyna: {{benzyna}}\n uszkodzony: {{uszkodzony}}\n napęd4x4: {{neped}}`)">INFO</button>
+            </td>
+        </tr>
+    {{/each}}
+</table>
+{{/if}}

@@ -1,0 +1,66 @@
+<h1 class="fw-normal">edit / update page</h1>
+<form action="/Edit" method="get">
+{{#if docs}}
+<table class="table table-borderless">
+    <tr class="border-bottom">
+        <th>_id</th>
+        <th>ubezpieczony</th>
+        <th>benzyna</th>
+        <th>uszkodzony</th>
+        <th>napęd 4x4</th>
+    </tr>
+    {{#each docs}}
+        {{#if edit}}
+        <tr class="border-bottom">
+            <td>{{_id}}</td>
+            <td>
+                <select name="ubezpieczony" id="ubezpieczony">
+                    <option value="tak">tak</option>
+                    <option value="nie" >nie</option>
+                    <option value="brak danych" >brak danych</option>
+                </select>
+            </td>
+            <td>
+                <select name="benzyna" id="benzyna">
+                    <option value="tak" >tak</option>
+                    <option value="nie" >nie</option>
+                    <option value="brak danych" >brak danych</option>
+                </select>
+            </td>
+            <td>
+                <select name="uszkodzony" id="uszkodzony">
+                    <option value="tak" >tak</option>
+                    <option value="nie" >nie</option>
+                    <option value="brak danych" >brak danych</option>
+                </select>
+            </td>
+            <td>
+                <select name="neped" id="neped">
+                    <option value="tak">tak</option>
+                    <option value="nie" >nie</option>
+                    <option value="brak danych" >brak danych</option>
+                </select>
+            </td>
+            <td>
+                <button id="info" name="{{_id}}" type="submit" formaction="/updateCar" class="btn btn-danger rounded">update</button>
+            </td>
+            <td>
+                <button id="info" name="{{_id}}" type="submit" formaction="/edit"class="btn btn-dark rounded">cancel</button>
+            </td>
+        </tr>
+        {{else}}
+        <tr class="border-bottom">
+            <td>{{_id}}</td>
+            <td>{{ubezpieczony}}</td>
+            <td>{{benzyna}}</td>
+            <td>{{uszkodzony}}</td>
+            <td>{{neped}}</td>
+            <td>
+                <button id="info" name="{{_id}}" type="submit" formaction="/editOne" class="btn btn-dark rounded">EDIT</button>
+            </td>
+        </tr>
+        {{/if}}
+    {{/each}}
+</table>
+{{/if}}
+</form>

@@ -1,0 +1,31 @@
+<form action="/Delete" method="get">
+<h1 class="fw-normal">delete cars page</h1>
+{{#if docs}}
+<button id="deleteButton" onclick="return confirm('Czy usunąć?')" type="submit" formaction="/deleteAll" class="btn btn-danger rounded">DELETE ALL CARS</button>
+<button id="info" onclick="return confirm('Czy usunąć?')" type="submit" formaction="/deleteSelected" class="btn btn-dark my-2 rounded">DELETE SELECTED</button>
+<table class="table table-borderless">
+    <tr class="border-bottom">
+        <th>_id</th>
+        <th>ubezpieczony</th>
+        <th>benzyna</th>
+        <th>uszkodzony</th>
+        <th>napęd 4x4</th>
+    </tr>
+    {{#each docs}}
+        <tr class="border-bottom">
+            <td>{{_id}}</td>
+            <td>{{ubezpieczony}}</td>
+            <td>{{benzyna}}</td>
+            <td>{{uszkodzony}}</td>
+            <td>{{neped}}</td>
+            <td>
+                <button id="deleteButton" name="{{_id}}" onclick="return confirm('Czy usunąć?')" type="submit" formaction="/deleteOne" class="btn btn-danger rounded">DELETE</button>
+            </td>
+            <td>
+                <input type="checkbox" name="{{_id}}" id="checkbox">
+            </td>
+        </tr>
+    {{/each}}
+</table>
+{{/if}}
+</form>
