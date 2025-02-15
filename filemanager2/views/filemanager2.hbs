@@ -1,0 +1,116 @@
+<div class="flex">
+    {{!-- left panel do dodawania plikow --}}
+    <div id="divLeft">
+        <div class="button1" id="folder">new folder</div>
+        <div class="button1" id="file">new file</div>
+        <form enctype="multipart/form-data" action="/handleUpload" method="post">
+            <div id="upload">
+                <input type="file" multiple required name="uploadFile" id="uploadFile">
+                <label for="uploadFile" id="file1" onclick="disabled()" onmouseover="disabled()">Select file(s) to
+                    upload</label>
+                <div>
+                    <button disabled="true" type="submit" class="submitButtonGray"
+                        id="createFolderButton">upload</button>
+                </div>
+        </form>
+    </div>
+
+</div>
+<div style="width: 90%;">
+    {{#if data}}
+    {{!-- miejsce do wyswietlana folderow --}}
+    <div id="divRight1">
+        <h2>folders</h2>
+        <div class="flex">
+            {{#each data}}
+            {{#if dir}}
+            <div id="data">
+                <div>
+                    <div class="flex" style="align-items: center; margin-bottom: 10px; justify-content:space-between;">
+                        <div id="backGray">
+                            <div id="ext" style="color: white;">{{ext}}</div>
+                        </div>
+                        <a href="/usun/{{name}}" onclick="return confirm('Czy usunąć?')">X</a>
+                    </div>
+                    <p>[{{name}}]</p>
+                </div>
+
+            </div>
+            {{/if}}
+            {{/each}}
+        </div>
+    </div>
+    {{!-- miejsce do wyswietlana plikow --}}
+    <div id="divRight1">
+        <h2>files</h2>
+        <div class="flex">
+            {{#each data}}
+            {{#if file}}
+            <div id="data">
+                <div>
+                    <div class="flex" style="align-items: center; margin-bottom: 10px; justify-content:space-between;">
+                        <div id="backGray">
+                            <div id="ext" style="color: white; background-color:black;">{{ext}}</div>
+                        </div>
+                        <a href="/usun/{{name}}" onclick="return confirm('Czy usunąć?')">X</a>
+                    </div>
+                    <p>[{{name}}]</p>
+                </div>
+
+            </div>
+            {{/if}}
+            {{/each}}
+        </div>
+    </div>
+    {{/if}}
+</div>
+
+</div>
+
+{{!-- dialog do tworzenia folderu --}}
+<dialog id="dialogForFolder">
+    <h4>new folder name:</h4>
+    <form action="/newFolder">
+        <input type="text" name="folder" id="folder">
+        <div class="flex" style="margin: 0 25%;">
+            <button class="blueButton" type="submit" id="createFolderButton">create</button>
+            <div class="blueButton" onclick="closeDialog('dialogForFolder')">cancel</div>
+        </div>
+    </form>
+</dialog>
+{{!-- dialog do tworzenia pliku --}}
+<dialog id="dialogForFile">
+    <h4>new file name:</h4>
+    <form action="/newFile">
+        <input type="text" name="file" id="file">
+        <div class="flex" style="margin: 0 25%;">
+            <button class="blueButton" type="submit" id="createFileButton">create</button>
+            <div class="blueButton" onclick="closeDialog('dialogForFile')">cancel</div>
+        </div>
+    </form>
+</dialog>
+<script>
+    document.getElementById("folder").addEventListener("click", clickFolder)
+    document.getElementById("file").addEventListener("click", clickFile)
+    function clickFolder() {
+        const dialog = document.getElementById("dialogForFolder")
+            .showModal();
+    }
+    function clickFile() {
+        const dialog = document.getElementById("dialogForFile")
+            .showModal();
+    }
+    function closeDialog(id) {
+        document.getElementById(id).close()
+    }
+    function disabled() {
+        const file = document.getElementById("uploadFile")
+        const button1 = document.getElementById("createFolderButton")
+        if (file.files.length === 0) {
+            button1.classList = "submitButtonGray"
+        } else {
+            button1.removeAttribute("disabled");
+            button1.classList = "submitButtonBlue"
+        }
+    }
+</script>
