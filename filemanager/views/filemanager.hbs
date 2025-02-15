@@ -1,0 +1,36 @@
+<div class="flex">
+        <div id="divLeft">
+        <p>filemanager</p>
+            <a href="/deleteAll" id="reset"name="deleteAll">remove file data from array</a>
+        </div>
+        <div id="">
+            {{#if data}}
+            <table cellspacing="30">
+                <tr style="border: 1px dashed cornflowerblue;">
+                    <td>id</td>
+                    <td>icon</td>
+                    <td>name</td>
+                    <td>size</td>
+                    <td>type</td>
+                    <td>*</td>
+                    <td>*</td>
+                    <td>*</td>
+                    <td>*</td>
+                </tr>
+                {{#each data}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td class="icon">{{icon}}</td>
+                        <td>{{name}}</td>
+                        <td>{{size}}</td>
+                        <td>{{type}}</td>
+                        <td><a href="/show/{{id}}">show</a></td>
+                        <td><a href="/info/{{id}}">info</a></td>
+                        <td><a href="/download/{{id}}">download</a></td>
+                        <td><a href="/delete/{{id}}">delete</a></td>
+                    </tr>
+                {{/each}}
+            </table>
+            {{/if}}
+        </div>
+</div>

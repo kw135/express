@@ -1,0 +1,17 @@
+<div class="flex">
+    <div id="divLeft">
+        <p>file details</p>
+    </div>
+    <div id="divRight1">
+        <p id="author">Krzysztof Węgrzyn(2024)</p>
+        {{#if file}}
+            {{#each file}}
+                <div><span>id</span>: {{id}}</div><br>
+                <div><span>name</span>: {{name}}</div><br>
+                <div><span>path</span>: {{path}}</div><br>
+                <div><span>size</span>: {{size}}</div><br>
+                <div><span>savedate</span>: {{date}}</div>
+            {{/each}}
+        {{/if}}
+    </div>
+</div>
