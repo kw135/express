@@ -2,9 +2,9 @@
     {{! left panel do dodawania plikow }}
     <div id="divLeft">
         <div class="flex" id="colors">
-            <div id="operator" style="border-radius: 15px 0 0 15px;" onclick="changeTheme('-')">-</div>
-            <div id="colorText">colors</div>
-            <div id="operator" style="border-radius:0 15px 15px 0;" onclick="changeTheme('+')">+</div>
+            <div id="operator" style="border-radius: 15px 0 0 15px;" onclick="changeFont('-')">-</div>
+            <div id="colorText" onclick="changeTheme()">colors</div>
+            <div id="operator" style="border-radius:0 15px 15px 0;" onclick="changeFont('+')">+</div>
         </div>
         <div class="button1" id="saveConfig">save config</div>
         <div class="button1" id="renameFile">rename file</div>
@@ -97,6 +97,9 @@
         default:
             break
     }
+    const fontSize = "{{ showFileData.font }}"
+    rowNums.style.fontSize = parseInt(fontSize) + "px"
+    mainText.style.fontSize = parseInt(fontSize) + "px"
     mainText.oninput = function calcLines() {
         const lines = mainText.value.split("\n");
         rowNums.value = lines.map((item, i) => `${i + 1}\n`).join("");
@@ -113,15 +116,30 @@
     }
 
     let theme = 0
-    let data = { colors: "theme1", ext: "" }
-    function changeTheme(op) {
+    let data = { colors: "{{ showFileData.theme }}",font: parseInt("{{ showFileData.font }}")}
+    switch(data.colors){
+        case "theme1": 
+            theme = 0
+            break
+        case "theme2":
+            theme = 1
+            break
+        case "theme3":
+            theme = 2
+            break
+        default:
+            break    
+    }
+    function changeFont(op){
         if (op == "+") {
-            theme++
+            data.font++
         } else if (op == "-") {
-            theme--
+            data.font--
         }
-        let ext = `{{showFileData.filename}}`
-        data = { colors: "theme1", ext: ext }
+        fetchData()
+    }
+    function changeTheme() {
+        theme++;
         switch (theme % 3) {
             case 0:
                 data.colors = "theme1"
@@ -141,6 +159,9 @@
             default:
                 break
         }
+        fetchData()
+    }
+    function fetchData(){
         const options = {
             method: "POST",
             headers: {
@@ -151,6 +172,9 @@
         fetch("/changeTheme", options)
             .then(response => response.json())
             .then(data => {
+                const fontSize = data.font
+                rowNums.style.fontSize = fontSize + "px"
+                mainText.style.fontSize = fontSize + "px"
                 const theme = data.theme
                 switch (theme) {
                     case "theme1":
@@ -182,7 +206,7 @@
     }
     document.getElementById("saveConfig").onclick = function () {
         let ext = `{{showFileData.filename}}`
-        let data1 = { ext: ext, color: data.colors }
+        let data1 = { font: data.font, color: data.colors }
         const options = {
             method: "POST",
             headers: {

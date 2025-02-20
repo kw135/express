@@ -41,7 +41,7 @@
               </div>
               <a href="/usun/{{fullname}}" onclick="return confirm('Czy usunąć?')">X</a>
             </div>
-            <a href="filemanager?path={{path}}/{{name}}">[{{name}}]</a>
+            <a href="filemanager?path={{path}}/{{fullname}}">[{{name}}]</a>
           </div>
         </div>
         {{/if}}
@@ -63,7 +63,7 @@
               <a href="/usun/{{fullname}}" onclick="return confirm('Czy usunąć?')">X</a>
             </div>
             {{#if show}}
-            <a style="overflow: hidden;" href="showFile?name={{path}}/{{name}}">[{{name}}]</a>
+            <a style="overflow: hidden;" href="showFile?name={{path}}/{{fullname}}">[{{name}}]</a>
             {{else}}
             <p style="overflow: hidden;">[{{name}}]</p>
             {{/if}}

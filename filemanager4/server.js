@@ -32,14 +32,8 @@ const templates = {
     json: "{\r\tname: 'John Doe',\r\tage: 30\r}",
     txt: "Przykładowy tekst\rtekst 2"
 }
-
-const usedThemes = {
-    js: "theme1",
-    css: "theme1",
-    html: "theme1",
-    json: "theme1",
-    txt: "theme1"
-}
+let font = 16
+let usedTheme = "theme1"
 app.get("/filemanager", function (req, res) {
     let showRenameButton = false
     //tworzenie sciezki folderow
@@ -64,7 +58,7 @@ app.get("/filemanager", function (req, res) {
     let lastFile = [{ path: pathInfo[pathInfo.length - 1].path }]
     pathInfo.length > 1 ? showRenameButton = true : null
     data = []
-    currentPath = path.join(__dirname, "static/", path1,)
+    currentPath = path.join(__dirname, "static/", path1)
     fs.readdir(currentPath, (err, files) => {
         if (err) throw err
         files.forEach((file) => {
@@ -129,7 +123,6 @@ app.get("/newFile", function (req, res) {
     }
     if (fs.existsSync(path.join(currentPath, req.query.file + req.query.ext))) {
         const filepath1 = path.join(currentPath, "kopia_" + req.query.file + req.query.ext)
-        console.log(filepath1)
         fs.writeFile(filepath1, text, (err) => {
             if (err) throw err
             res.redirect("/filemanager?path=" + shortPath)
@@ -214,97 +207,37 @@ app.get("/displayFile", function (req, res) {
 })
 //edycja i wyswietlanie pliku
 app.get("/showFile", function (req, res) {
-    const name = req.query.name.split(".")
-    const ext = name[name.length - 1]
-    let theme = ""
-    switch (ext) {
-        case "txt":
-            theme = usedThemes.txt
-            break
-        case "html":
-            theme = usedThemes.html
-            break
-        case "js":
-            theme = usedThemes.js
-            break
-        case "json":
-            theme = usedThemes.json
-            break
-        case "css":
-            theme = usedThemes.css
-            break
-        default:
-            theme = usedThemes.default
-            break;
-    }
     let showFileData = {
         filename: req.query.name,
         filedata: "",
-        theme: theme
+        theme: usedTheme,
+        font: font
     };
     const filePath = path.join(__dirname, "static/upload", req.query.name)
     fs.readFile(filePath, (err, data) => {
         if (err) throw err
         showFileData.filedata = data.toString();
+        res.render("showFile.hbs", { showFileData: showFileData })
     })
-    res.render("showFile.hbs", { showFileData: showFileData })
 })
 //zapis pliku
 app.post("/saveFile", function (req, res) {
     const filepath = path.join(__dirname, "static/upload", "/", req.body.filename)
     fs.writeFile(filepath, req.body.mainText, (err) => {
         if (err) throw err
+        res.redirect("/filemanager?path=" + shortPath);
     })
-    res.redirect("/filemanager?path=" + shortPath);
 })
 //zapisanie konfiguracji
 app.post("/saveConfig", function (req, res) {
-    const name = req.body.ext.split(".")
-    const ext = name[name.length - 1]
-    switch (ext) {
-        case "txt":
-            usedThemes.txt = req.body.color
-            break
-        case "html":
-            usedThemes.html = req.body.color
-            break
-        case "js":
-            usedThemes.js = req.body.color
-            break
-        case "json":
-            usedThemes.json = req.body.color
-            break
-        case "css":
-            usedThemes.css = req.body.color
-            break
-        default:
-            break
-    }
+    usedTheme = req.body.color
+    font = req.body.font
     res.redirect("/show?path=" + req.body.ext);
 })
 //zmiana style fetchem bez zapisu na serwerze
 app.post("/changeTheme", function (req, res) {
-    const name = req.body.ext.split(".")
-    const ext = name[name.length - 1]
-    switch (ext) {
-        case "txt":
-            res.send(JSON.stringify({ theme: req.body.colors }));
-            break
-        case "html":
-            res.send(JSON.stringify({ theme: req.body.colors }));
-            break
-        case "js":
-            res.send(JSON.stringify({ theme: req.body.colors }));
-            break
-        case "json":
-            res.send(JSON.stringify({ theme: req.body.colors }));
-            break
-        case "css":
-            res.send(JSON.stringify({ theme: req.body.colors }));
-            break
-        default:
-            break
-    }
+    console.log(req.body)
+    res.send(JSON.stringify({ theme: req.body.colors, font: req.body.font }));  
 })
 app.listen(PORT, function () {
     console.log("start serwera na porcie " + PORT)
